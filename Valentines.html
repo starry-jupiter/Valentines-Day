@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #ffebee;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        #mainContent { transition: opacity 0.5s; }
+        h1 { color: #d32f2f; }
+        .buttons { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #yesBtn { background-color: #ff5252; color: white; z-index: 10; }
+        #noBtn {
+            background-color: #cfd8dc;
+            color: #37474f;
+            position: fixed; 
+            z-index: 100;
+            transition: left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .gif-container img { width: 250px; border-radius: 20px; }
+        .glitch-title { font-size: 3rem; color: black; text-transform: uppercase; }
+        .prank-btn { display: block; width: 100%; margin: 10px 0; background: #ff5252; color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="mainContent">
+        <div class="gif-container">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1bm5ueGd4ZzR4OHB6ZzR4OHB6ZzR4OHB6ZzR4OHB6ZzR4OHB6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif">
+        </div>
+        <h1>Will you be my Valentine? ❤️</h1>
+        <div class="buttons">
+            <button id="yesBtn">Yes!</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const mainContent = document.getElementById('mainContent');
+        
+        let moveCount = 0;
+
+        function moveButton() {
+            moveCount++;
+            if (moveCount < 10) {
+                const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+                const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+                noBtn.style.left = x + 'px';
+                noBtn.style.top = y + 'px';
+
+                if (moveCount === 3) noBtn.innerText = "Are you sure?";
+                if (moveCount === 6) noBtn.innerText = "Try harder! 😂";
+                if (moveCount === 9) noBtn.innerText = "LAST CHANCE...";
+            } else {
+                triggerTakeover();
+            }
+        }
+
+        noBtn.addEventListener('mouseenter', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        function triggerTakeover() {
+            noBtn.style.display = 'none';
+            mainContent.style.opacity = "0";
+            
+            setTimeout(() => {
+                alert("⚠️ SYSTEM ERROR: 'No' function has timed out.");
+                alert("Searching for alternative options...");
+                alert("Error: Only 'Yes' remaining in memory.");
+                showPrankScreen();
+            }, 500);
+        }
+
+        function showPrankScreen() {
+            document.body.style.backgroundColor = "#ffcdd2";
+            document.body.innerHTML = `
+                <div style="padding: 20px; max-width: 400px; z-index: 1000; position: relative;">
+                    <h1 class="glitch-title" id="glitch">Access Denied</h1>
+                    <p>To exit this loop, please confirm your Valentine status:</p>
+                    <button class="prank-btn" onclick="celebrate()">I Agree to be your Valentine</button>
+                    <button class="prank-btn" onclick="celebrate()">Confirm 'Yes'</button>
+                    <button class="prank-btn" onclick="celebrate()">I am legally obligated to say Yes</button>
+                </div>
+            `;
+            
+            const g = document.getElementById('glitch');
+            setInterval(() => {
+                g.style.transform = `translate(${Math.random()*4}px, ${Math.random()*4}px)`;
+            }, 50);
+        }
+
+        function celebrate() {
+            // First, update the screen to the final "YAY" content
+            document.body.innerHTML = `
+                <div style="text-align:center;">
+                    <h1 style="color: #d32f2f; font-size: 3rem;">YAY! 🥰</h1>
+                    <div class="gif-container" style="margin-bottom:10px;">
+                        <img src="pochacco kiss.jpeg" alt="Our Photo" style="width:250px; border-radius:20px;">
+                    </div>
+                    <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXBkcjNidHNyMmx4a2h0enNiNHpvaGNzejhkY2VwdW5jbGhoaHZuciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nNfRs2Unc5VxI3VnQB/giphy.gif" style="width:250px; border-radius:20px;">
+                    <p style="font-size: 1.2rem; margin-top: 20px;"> So glad you said yes! ❤️</p>
+                </div>
+            `;
+
+            // Now that the new screen is rendered, fire the confetti!
+            // We use a tiny delay to ensure the browser is ready to draw.
+            setTimeout(() => {
+                confetti({
+                    particleCount: 500,
+                    spread: 250,
+                    origin: { y: 0.8 },
+                    colors: ['#ff5252', '#ffcdd2', '#ffffff'],
+                    zIndex: 9999
+                });
+            }, 50);
+        }
+
+        yesBtn.addEventListener('click', celebrate);
+    </script>
+</body>
+</html>
